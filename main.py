@@ -2,10 +2,7 @@ import flask
 from flask import request, jsonify
 import sqlite3
 from sqlite3 import Error
-
-
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+from db_handling.metodo_cria_conexão import create_connection
 
 #Retorna itens da database como dicionários.
 def dict_factory(cursor, row):
@@ -14,14 +11,8 @@ def dict_factory(cursor, row):
 		d[col[0]] = row[idx]
 	return d
 
-#Cria uma coneção com a database especificada pelo argumento.
-def create_connection(database):
-	conn = None
-	try:
-		conn = sqlite3.connect(database)
-	except Error as e:
-		print(e)
-	return conn
+app = flask.Flask(__name__)
+app.config["DEBUG"] = True
 
 #Home.
 @app.route('/', methods=['GET'])
@@ -31,7 +22,7 @@ def home():
 #Retorna o database 'nome_aluno.db'.
 @app.route('/aluno_cadastro', methods=['GET'])
 def api_aluno_database():
-	database = 'nome_aluno.db'
+	database = 'db/nome_aluno.db'
 	conn = create_connection(database)
 	conn.row_factory = dict_factory
 	cur = conn.cursor()
@@ -44,19 +35,19 @@ def api_aluno_database():
 #Retorna o database 'resposta.db'.
 @app.route('/respostas', methods=['GET'])
 def api_respostas_database():
-	database = 'resposta.db'
-	conn = create_connection(database)
-	conn.row_factory = dict_factory
-	cur = conn.cursor()
-	sql = 'SELECT * FROM resposta;'
-	resposta_database = cur.execute(sql).fetchall()
+    database = 'db/resposta.db'
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    sql = 'SELECT * FROM resposta;'
+    resposta_database = cur.execute(sql).fetchall()
 
-	return jsonify(resposta_database)
+    return jsonify(resposta_database)
 
 #Retorna o database 'gabarito.db'.
 @app.route('/gabarito', methods=['GET'])
 def api_gabarito_database():
-	database = 'gabarito.db'
+	database = 'db/gabarito.db'
 	conn = create_connection(database)
 	conn.row_factory = dict_factory
 	cur = conn.cursor()
