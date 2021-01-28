@@ -3,6 +3,9 @@ from flask import request, jsonify
 import sqlite3
 from sqlite3 import Error
 from db_handling.metodo_cria_conexão import create_connection
+from db_handling.metodo_cadastro_aluno import create_aluno
+from db_handling.metodo_cadastro_resposta import create_resposta
+from db_handling.metodo_cadastro_gabarito import create_gabarito
 
 #Retorna itens da database como dicionários.
 def dict_factory(cursor, row):
@@ -19,46 +22,82 @@ app.config["DEBUG"] = True
 def home():
     return "<h1>Desafio Escola Alf</h1><p>Este site é um protótipo para graduar notas de alunos da escola Alf</p>"
 
-#Retorna o database 'nome_aluno.db'.
-@app.route('/aluno_cadastro', methods=['GET'])
+#Retorna o database 'nome_aluno.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
+@app.route('/aluno_cadastro', methods=['GET', 'POST'])
 def api_aluno_database():
-	database = 'db/nome_aluno.db'
-	conn = create_connection(database)
-	conn.row_factory = dict_factory
-	cur = conn.cursor()
-	sql = 'SELECT * FROM nome_aluno;'
-	alunos_database = cur.execute(sql).fetchall()
+    if request.method == 'GET':
+        database = 'db/nome_aluno.db'
+        conn = create_connection(database)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+        sql = 'SELECT * FROM nome_aluno;'
+        alunos_database = cur.execute(sql).fetchall()
 
-	return jsonify(alunos_database)
+        return jsonify(alunos_database)
 
+    elif request.method == 'POST':
+        if request.args['nome']!="":
+            database = 'db/nome_aluno.db'
+            conn = create_connection(database)
+            conn.row_factory = dict_factory
+            create_aluno(conn)
+        
+            return 'Aluno(a) %s cadastrado(a) com sucesso.' %request.args['nome']
+        else: 
+            return 'Cadastro do aluno(a) falhou. Nome do(a) aluno(a) não informado.'
 
-#Retorna o database 'resposta.db'.
-@app.route('/respostas', methods=['GET'])
+#Retorna o database 'resposta.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
+@app.route('/respostas', methods=['GET', 'POST'])
 def api_respostas_database():
-    database = 'db/resposta.db'
-    conn = create_connection(database)
-    conn.row_factory = dict_factory
-    cur = conn.cursor()
-    sql = 'SELECT * FROM resposta;'
-    resposta_database = cur.execute(sql).fetchall()
+    if request.method == 'GET':
+        database = 'db/resposta.db'
+        conn = create_connection(database)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+        sql = 'SELECT * FROM resposta;'
+        resposta_database = cur.execute(sql).fetchall()
 
-    return jsonify(resposta_database)
+        return jsonify(resposta_database)
+        
+    elif request.method == 'POST':
+        if request.args['id_prova']!="" and request.args['id_aluno']!="" and request.args['resposta']!="":
+            database = 'db/resposta.db'
+            conn = create_connection(database)
+            conn.row_factory = dict_factory
+            create_resposta(conn)
+            
+            return 'Respostas da prova de ID: %s do aluno(a) de ID: %s cadastradas com sucesso.' %(request.args['id_prova'], request.args['id_aluno'])
+        else:
+            return 'Cadastro da resposta falhou. Alguma das informações não foram fornecidas.'
 
-#Retorna o database 'gabarito.db'.
-@app.route('/gabarito', methods=['GET'])
+
+#Retorna o database 'gabarito.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
+@app.route('/gabarito', methods=['GET', 'POST'])
 def api_gabarito_database():
-	database = 'db/gabarito.db'
-	conn = create_connection(database)
-	conn.row_factory = dict_factory
-	cur = conn.cursor()
-	sql = 'SELECT * FROM gabarito;'
-	gabarito_database = cur.execute(sql).fetchall()
+    if request.method == 'GET':
+        database = 'db/gabarito.db'
+        conn = create_connection(database)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+        sql = 'SELECT * FROM gabarito;'
+        gabarito_database = cur.execute(sql).fetchall()
 
-	return jsonify(gabarito_database)
+        return jsonify(gabarito_database)
+
+    elif request.method == 'POST':
+        if request.args['id_prova']!="" and request.args['gabarito']!="" and request.args['peso']!="":
+            database = 'db/gabarito.db'
+            conn = create_connection(database)
+            conn.row_factory = dict_factory
+            create_gabarito(conn)
+            
+            return ('Gabarito da prova de ID: %s cadastrado com sucesso.' %request.args['id_prova'])
+        else:
+            return 'Cadastro do gabarito falhou. Alguma das informações não foram fornecidas.'
 
 #Erro
 @app.errorhandler(404)
 def page_not_found(e):
-	return "<h1>404</h1><p>The resource could not be found.</p>", 404
+	return "<h1>404</h1><p>Página não encontrada.</p>", 404
 
 app.run()
