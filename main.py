@@ -44,9 +44,9 @@ def api_aluno_database():
             conn.row_factory = dict_factory
             create_aluno(conn)
         
-            return 'Aluno(a) %s cadastrado(a) com sucesso.' %request.args['nome']
+            return 'Aluno(a) %s cadastrado(a) com sucesso.' %request.args['nome'], 201
         else: 
-            return 'Cadastro do aluno(a) falhou. Nome do(a) aluno(a) não informado.'
+            return 'Cadastro do aluno(a) falhou. Nome do(a) aluno(a) não informado.', 400
 
 #Retorna o database 'resposta.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
 @app.route('/respostas', methods=['GET', 'POST'])
@@ -68,9 +68,9 @@ def api_respostas_database():
             conn.row_factory = dict_factory
             create_resposta(conn)
             
-            return 'Respostas da prova de ID: %s do aluno(a) de ID: %s cadastradas com sucesso.' %(request.args['id_prova'], request.args['id_aluno'])
+            return 'Respostas da prova de ID: %s do aluno(a) de ID: %s cadastradas com sucesso.' %(request.args['id_prova'], request.args['id_aluno']), 201
         else:
-            return 'Cadastro da resposta falhou. Alguma das informações não foi fornecida.'
+            return 'Cadastro da resposta falhou. Alguma das informações não foi fornecida.', 400
 
 #Retorna o database 'gabarito.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
 @app.route('/gabarito', methods=['GET', 'POST'])
@@ -89,7 +89,7 @@ def api_gabarito_database():
         pesos = list(request.args['peso'])
         gabaritos = list(request.args['gabarito'])
         if len(pesos)!=len(gabaritos):
-            return 'Cadastro do gabarito falhou. Cada gabarito deve ter um peso e o peso deve ser um valor inteiro menor que 10.'
+            return 'Cadastro do gabarito falhou. Cada gabarito deve ter um peso e o peso deve ser um valor inteiro menor que 10.', 400
         else:
             if request.args['id_prova']!="" and request.args['gabarito']!="" and request.args['peso']!="":
                 database = 'db/gabarito.db'
@@ -97,7 +97,7 @@ def api_gabarito_database():
                 conn.row_factory = dict_factory
                 create_gabarito(conn)
                         
-                return ('Gabarito da prova de ID: %s cadastrado com sucesso.' %request.args['id_prova'])
+                return ('Gabarito da prova de ID: %s cadastrado com sucesso.' %request.args['id_prova']), 201
 
 #Calcula a média de cada aluno e retorna os alunos aprovados.
 @app.route('/aprovados', methods=['GET'])
