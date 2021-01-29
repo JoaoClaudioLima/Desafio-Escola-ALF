@@ -24,7 +24,7 @@ app.config["DEBUG"] = True
 def home():
     return "<h1>Desafio Escola Alf</h1><p>Este site é um protótipo para graduar notas de alunos da escola Alf</p>"
 
-#Retorna o database 'nome_aluno.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
+#Retorna o database 'nome_aluno.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de alunos.
 @app.route('/aluno_cadastro', methods=['GET', 'POST'])
 def api_aluno_database():
     if request.method == 'GET':
@@ -72,7 +72,7 @@ def api_respostas_database():
         else:
             return 'Cadastro da resposta falhou. Alguma das informações não foi fornecida.', 400
 
-#Retorna o database 'gabarito.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de respostas.
+#Retorna o database 'gabarito.db' em caso do request.method ser um GET. Caso seja um POST, inclui na database de gabaritos.
 @app.route('/gabarito', methods=['GET', 'POST'])
 def api_gabarito_database():
     if request.method == 'GET':
