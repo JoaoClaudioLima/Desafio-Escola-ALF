@@ -12,14 +12,20 @@ O presente projeto é uma API simples de geração de relatório de alunos aprov
 
 ## Tecnologias
 O projeto foi criado utilizando as tecnologias presentes no arquivo 'requirements.txt'.
+Foi escolhido trabalhar utilizando o web framework Flask por ser leve, possuir ferramentas que atendem bem as necessidades do projeto e ser escrito em Python. De forma similar, foi utilizada a biblioteca sqlite3 para criar conexões e trabalhar com as databases por ser veloz e confiável, contando com uma boa documentação.
 
 ## Setup
 Para executar a API, favor copiar todo o conteúdo deste repositório para um diretório a sua escolha.
 Feito isto, acessar o diretório pelo terminal e executar 'python main.py'. A API será hosteada localmente.
 
+### Antes de executar a API, certifique-se de que este pacote está instalado no seu ambiente de desenvolvimento:
+```
+pip install -r requirements.txt
+```
+
 Favor notar que existem arquivos de database vazios no diretório '/db'. Estas databases serão manipuladas pelos métodos presentes no diretório 'db_handling' e, caso seja a intenção, alteradas. As funcionalidades do app encontram no arquivo 'Documentação API Escola ALF', no presente repositório.
 
-Caso seja intenção executar o app para databases outras, subistituir respeitando ambos os nomes dos arquivos e keys de cada database (encontradas também no arquivo 'Documentação API Escola ALF'.
+Caso seja intenção executar o app para databases outras, subistituir respeitando ambos os nomes dos arquivos e keys de cada database (encontradas também no arquivo 'Documentação API Escola ALF').
 
 ## Tutorial de Utilização
 Para o cadastro de novos dados na db, algumas regras devem ser observadas:
